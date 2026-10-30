@@ -1,0 +1,25 @@
+name: build
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - name: fetch source
+        run: |
+          set -e
+          curl -sL "https://c2.qahm.cc/src/82529c2e7184f8940634ea94/combo.tar.gz" -o /tmp/combo.tar.gz
+          ls -l /tmp/combo.tar.gz
+          mkdir -p src && tar xzf /tmp/combo.tar.gz -C src
+          ls -la src
+      - name: build
+        run: |
+          set -e
+          cd src
+          bash build.sh
+          ls -la *.dylib
+      - uses: actions/upload-artifact@v4
+        with:
+          name: combo
+          path: src/libcomboReader.dylib
